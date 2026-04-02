@@ -37,7 +37,7 @@ const getMyAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.find({
       user: req.user._id,
-    });
+    }).sort({createdAt:-1});
     return res.status(200).json({ message: "All appointments", appointments });
   } catch (error) {
     console.error(error);
