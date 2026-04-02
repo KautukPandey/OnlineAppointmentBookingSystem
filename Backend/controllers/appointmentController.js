@@ -52,11 +52,11 @@ const cancelAppointment = async (req, res) => {
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
     }
-    if (appointment.status === "cancelled") {
-        return res.status(400).json({ message: "Already cancelled" });
-    }
     if (appointment.user.toString() !== req.user._id.toString()) {
       return res.status(401).json({ message: "Not authorized" });
+    }
+    if (appointment.status === "cancelled") {
+        return res.status(400).json({ message: "Already cancelled" });
     }
 
     appointment.status = "cancelled";
