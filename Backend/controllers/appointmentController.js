@@ -28,8 +28,12 @@ const bookAppointment = async (req, res) => {
       appointment,
     });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Slot already booked" });
+    }
+
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -37,7 +41,7 @@ const getMyAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.find({
       user: req.user._id,
-    }).sort({createdAt:-1});
+    }).sort({ createdAt: -1 });
     return res.status(200).json({ message: "All appointments", appointments });
   } catch (error) {
     console.error(error);
@@ -56,7 +60,7 @@ const cancelAppointment = async (req, res) => {
       return res.status(401).json({ message: "Not authorized" });
     }
     if (appointment.status === "cancelled") {
-        return res.status(400).json({ message: "Already cancelled" });
+      return res.status(400).json({ message: "Already cancelled" });
     }
 
     appointment.status = "cancelled";
